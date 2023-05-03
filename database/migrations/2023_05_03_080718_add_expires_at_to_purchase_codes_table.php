@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchase_codes', function (Blueprint $table) {
-            $table->id();
-            $table->string('purchase_code')->unique();
-            $table->boolean('activated')->default(false);
-            $table->dateTime('activation_date')->nullable();
-            $table->timestamps();
+        Schema::table('purchase_codes', function (Blueprint $table) {
+            $table->dateTime('expires_at')->nullable();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchase_codes');
+        Schema::table('purchase_codes', function (Blueprint $table) {
+            $table->dropColumn('expires_at');
+        });
     }
 };
