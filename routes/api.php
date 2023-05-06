@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\PurchaseCodeController;
+use App\Http\Controllers\LicenseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/register', [App\Http\Controllers\Api\Auth\RegisterController::class, 'register']);
 Route::post('/login', [App\Http\Controllers\Api\Auth\LoginController::class, 'login']);
+Route::middleware('auth:api')->get('/users/{id}', [App\Http\Controllers\Api\UsersController::class, 'show']);
 
 
-Route::post('/validate-purchase-code', [PurchaseCodeController::class, 'validatePurchaseCode']);
-Route::post('/generate-purchase-code', [PurchaseCodeController::class, 'generatePurchaseCode'])->middleware('auth:sanctum');
+Route::post('/validate-purchase-code', [LicenseController::class, 'validateLicense']);
+Route::post('/generate-purchase-code', [LicenseController::class, 'generatePurchaseCode'])->middleware('auth:sanctum');
