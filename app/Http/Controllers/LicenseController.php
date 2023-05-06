@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\PurchaseCode;
+use App\Models\License;
 
-class PurchaseCodeController extends Controller
+class LicenseController extends Controller
 {
     public function generatePurchaseCode(Request $request)
     {
@@ -17,7 +17,7 @@ class PurchaseCodeController extends Controller
         $validityInMonths = $request->input('validity');
         $expiresAt = $validityInMonths ? now()->addMonths($validityInMonths) : null;
 
-        $purchaseCode = new PurchaseCode;
+        $purchaseCode = new License;
         $purchaseCode->purchase_code = $this->generateUniquePurchaseCode();
         $purchaseCode->expires_at = $expiresAt;
         $purchaseCode->save();
@@ -25,16 +25,21 @@ class PurchaseCodeController extends Controller
         return response()->json(['message' => 'Purchase code generated successfully', 'purchase_code' => $purchaseCode->purchase_code, 'expires_at' => $purchaseCode->expires_at], 201);
     }
 
-    public function validatePurchaseCode(Request $request)
+    public function validateLicense(Request $request)
     {
         $validated = $request->validate([
+            'user_id' => 'required|string',
             'purchase_code' => 'required|string',
         ]);
 
-        $purchase_code = PurchaseCode::where('purchase_code', $request->purchase_code)->first();
+        $purchase_code = License::where('purchase_code', $request->purchase_code)->first();
 
         if (!$purchase_code) {
             return response()->json(['error' => 'Invalid purchase code'], 400);
+        }
+
+        if ($purchase_code->user_id) {
+            return response()->json(['error', 'Purchase code is already linked to another account'], 400);
         }
 
         /**
@@ -54,7 +59,11 @@ class PurchaseCodeController extends Controller
         }
 
         if (!$purchase_code->activated) {
-            $purchase_code->activated = true;
+            $purchase_code->update([
+                'activated' => true,
+                'user_id' => $validated['user_id'],
+            ]);
+
             $purchase_code->activation_date = now();
 
             // Calculate the new expiration date based on the validity period

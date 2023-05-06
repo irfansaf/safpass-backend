@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use http\Env\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
     public function login(Request $request) {
-        $request>validate([
+        Log::info('Request data: ', $request->all());
+
+        $request->validate([
             'login' => 'required',
             'password' => 'required',
         ]);
@@ -27,6 +30,10 @@ class LoginController extends Controller
         $user = $request->user();
         $token = $user->createToken('Personal Access Token');
 
-        return response()->json(['access_token' => $token->accessToken]);
+        return response()->json([
+            'user_id' => $user->id,
+            'access_token' => $token->plainTextToken,
+            'token_type' => 'Bearer',
+        ]);
     }
 }

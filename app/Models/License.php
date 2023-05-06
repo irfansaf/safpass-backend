@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PurchaseCode extends Model
+class License extends Model
 {
     use HasFactory;
 
@@ -15,6 +15,7 @@ class PurchaseCode extends Model
         'activated',
         'activation_date',
         'expires_at',
+        'user_id'
     ];
 
 }
