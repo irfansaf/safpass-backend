@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register', [App\Http\Controllers\Api\Auth\RegisterController::class, 'register']);
 Route::post('/login', [App\Http\Controllers\Api\Auth\LoginController::class, 'login']);
 Route::middleware('auth:api')->get('/users/{id}', [App\Http\Controllers\Api\UsersController::class, 'show']);
+Route::middleware('auth:api')->put('/users/{id}', [App\Http\Controllers\Api\UsersController::class, 'update']);
 
 
 Route::post('/validate-purchase-code', [LicenseController::class, 'validateLicense']);
