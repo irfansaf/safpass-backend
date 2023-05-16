@@ -41,6 +41,6 @@ class UsersController extends Controller
         $user->fill($fieldsToUpdate);
         $user->save();
 
-        return response()->json(['message' => 'User updated successfully']. 200);
+        return response()->json(['message' => 'User Updated successfully'], 200);
     }
 }
